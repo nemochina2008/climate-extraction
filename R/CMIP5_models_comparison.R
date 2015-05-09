@@ -24,7 +24,7 @@ ggplot(twoply2021, aes(x = pptmean, y = tasmaxmean, color = model2)) + geom_poin
   geom_errorbar(aes(ymax = tasmaxmean + tasmaxse, ymin = tasmaxmean - tasmaxse), width = .2, alpha = .5) +
   theme_bw() + labs(list(x = "Mean Annual Precip (mm)", y = "Mean Annual max monthly Temp", title = "2021 - 2050")) +
   geom_vline(xintercept = mean(twoply2021$pptmean)) + geom_hline(yintercept = mean(twoply2021$tasmaxmean)) + 
-  geom_text(aes(label = ID), color = "white", vjust = .4, show_guide = F)
+  geom_text(aes(label = row(dfsum)), color = "white", vjust = .4, show_guide = F)
 
 twoply2051 <- twoply[twoply$cuts == "2051-2080",]
 
