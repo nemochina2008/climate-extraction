@@ -3,20 +3,18 @@
 
 ## Extract ClimateNA data from each point that falls within the Humboldt NFWR "Extent_Poly.shp"
 
-
 # LOAD LIBRARIES and LOCATIONS --------------------------------------------
 
-# library(dplyr)
-# library(ggplot2)
+library(dplyr)
 library(stringr)
+# library(ggplot2)
 
 fold = "./data/processed/CNA_humboldt_mid_far/"
 zones = "./data/shps/CA_HUC8_and_all_Region18.shp"
 projection = "+proj=longlat +datum=NAD83"
 outfolder = "./outputs/Humbolt_Bay/"
 
-
-# GET FILES AND MERGE CSVS ------------------------------------------------
+# GET FILES AND SPLIT -----------------------------------------------------
 
 # get list of data csvs
 filelist<-list.files(fold,full.names=F)
@@ -27,58 +25,110 @@ filenames<-str_sub(filelist,start = 14, end=-5)
 filenames
 
 # get only seasonal files (ends in "S")
-seasonal.files<-filenames[c(grep("S$",filenames))]
-seasonal.files
+seasonal.2050s<-filenames[c(grep("205.S$",filenames))]
+seasonal.2080s<-filenames[c(grep("208.S$",filenames))]
 
-# get files and merge:
-datalist<- lapply(paste0(fold,"CNA_humboldt_",seasonal.files,".csv"),function(x) {read.csv(file=x, header=T)})
-names(datalist) <- seasonal.files # assign names to list of dataframes
+seasonal.2050s
+seasonal.2080s
 
-## Extract the columns of interest from each dataframe
-# dfcatch<-lapply(dfilt, function(x) x[,c(LISTHERE)]) 
-# names(dfcatch[[1]]) # check names
-# summary(dfcatch[[2]])
+# get Normals (all metrics: S=seasonal, M=monthly, Y=ann)
+normals.MSY<-filenames[c(grep("^Normal",filenames))]
+normals.MSY
+
+# MERGE CSVS --------------------------------------------------------------
+
+# function to read and merge files into one dataframe
+read_merge_CNA<-function(datafile,dfoutname){
+  df<- lapply(paste0(fold,"CNA_humboldt_",datafile,".csv"),
+                function(x) {read.csv(file=x, header=T)})
+  names(df) <- datafile # assign names to list of dataframes
 
 # Add column with name of model
-for(i in seq_along(datalist)){
-  datalist[[i]]$model<-seasonal.files[i]
+  for(i in seq_along(df)){
+    df[[i]]$modname<-datafile[i]
+  }
+  
+  ### check number of rows/cols per group
+  for(i in seq_along(df)){
+    cat(names(df[i]), " Rows/Cols=", dim(df[[i]]), "\n")
+  }
+  
+  # use dplyr function to merge the csvs
+  dff<-bind_rows(df)
+  #print(h(dff))
+  print(names(dff))
+  assign(x=dfoutname,value = dff,envir = .GlobalEnv)
 }
 
-### check number of rows/cols per group
-for(i in seq_along(datalist)){
-  cat(names(datalist[i]), " Rows/Cols=", dim(datalist[[i]]), "\n")
-}
+# use the function
+# seasonal.2050s
+read_merge_CNA(seasonal.2050s,"df50s")
 
-h(datalist[[1]])
+# seasonal.2080s
+read_merge_CNA(seasonal.2080s,"df80s")
 
-# use dplyr function to merge the csvs
-df<-bind_rows(datalist)
-h(df)
-names(df)
+# normals.MSY
+read_merge_CNA(normals.MSY,"dfnorms.MSY")
 
+# SIMPLE PLOT OF GIVEN VARIABLE -------------------------------------------
+
+selectmod<-as.character(seasonal.2050s[1])
+
+#humboldt<-df50s[df50s$modname==selectmod,]
+humboldt<-dplyr::filter(df50s, modname==selectmod)
+with(humboldt, plot(Longitude, Latitude, col="maroon",type="p"))
+
+
+# NON-FUNCTION OF MERGE CSVs ---------------------------------------------
+
+# # seasonal.2080
+# dat2080<- lapply(paste0(fold,"CNA_humboldt_",seasonal.2080s,".csv"),function(x) {read.csv(file=x, header=T)})
+# names(dat2080) <- seasonal.2080s # assign names to list of dataframes
+# 
+# # Add column with name of model
+# for(i in seq_along(dat2080)){
+#   dat2080[[i]]$model<-seasonal.2080s[i]
+# }
+# 
+# ### check number of rows/cols per group
+# for(i in seq_along(dat2080)){
+#   cat(names(dat2080[i]), " Rows/Cols=", dim(dat2080[[i]]), "\n")
+# }
+# 
+# # use dplyr function to merge the csvs
+# df80s<-bind_rows(dat2080)
+# h(df80s)
+# names(df80s)
 
 # SUMMARIZING -------------------------------------------------------------
 
+# use dplyr magic to calc mean, sd, and se for each variable 
+# over the ~400+ grid pts in Humboldt Polygon
+
 # set up standard error function
 se<-function(x) {sd(x)/sqrt(length(x))}
+names(df50s)
 
-# use dplyr magic!
-dfsum<-df %>% 
-  group_by(model) %>% 
+
+df50.mod<-df50s %>% 
+  group_by(modname) %>% 
   select(Elevation:RH_at) %>% 
   summarise_each(funs(mean, sd, se))
 
-summary(dfsum)
+summary(df50.mod)
 
 
 # PLOTTING ----------------------------------------------------------------
 
 
-ggplot(dfsum, aes(x = PPT_sp_mean, y = Tmax_sp_mean, color = model)) + geom_point(size = 8) + 
-  geom_errorbarh(aes(xmax = PPT_sp_mean + PPT_sp_sd, xmin = PPT_sp_mean - PPT_sp_sd), height = .02, alpha = .5) +
-  geom_errorbar(aes(ymax = Tmax_sp_mean + Tmax_sp_sd, ymin = Tmax_sp_mean - Tmax_sp_sd), width = .2, alpha = .5) +
+ggplot(df50.mod, aes(x = PPT_sp_mean, y = Tmax_sp_mean, color = modname)) + geom_point(size = 8) + 
+  geom_errorbarh(aes(xmax = PPT_sp_mean + PPT_sp_sd, 
+                     xmin = PPT_sp_mean - PPT_sp_sd), height = .2,lwd=1, alpha = .5) +
+  geom_errorbar(aes(ymax = Tmax_sp_mean + Tmax_sp_sd, 
+                    ymin = Tmax_sp_mean - Tmax_sp_sd), width=0.5, lwd=1, alpha = .5) +
   theme_bw() + labs(list(x = "Mean Spring Precip (mm)", y = "Mean Spring max monthly Temp", title = "ClimateNA")) +
-  geom_vline(xintercept = mean(dfsum$PPT_sp_mean)) + geom_hline(yintercept = mean(dfsum$Tmax_sp_mean)) 
+  geom_vline(xintercept = mean(df50.mod$PPT_sp_mean)) + geom_hline(yintercept = mean(df50.mod$Tmax_sp_mean)) 
+
 #geom_text(aes(label = row(dfsum), color = "white", vjust = .4, show_guide = F))
 
 

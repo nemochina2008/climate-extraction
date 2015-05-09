@@ -16,7 +16,7 @@ if(Sys.info()[4]=="RYAN-PC") {root<-"C://Users//Ryan//Desktop//Dropbox//R//"} el
 }
 
 .First <- function(){
-	cat("\nYarRRR!\n-------------------\nGoogle Earth Engine\n",sep="")
+	cat("\nYarRRR!\n-------------------\nClimate Extraction\n",sep="")
 	cat("-------------------\n\n",sep="")
 	  
 	if(file.exists(paste(root,"//functions//RWatershedFunctions.r",sep=""))){
