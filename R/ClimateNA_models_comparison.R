@@ -107,8 +107,6 @@ with(humboldt, plot(Longitude, Latitude, col="maroon",type="p"))
 
 # set up standard error function
 se<-function(x) {sd(x)/sqrt(length(x))}
-names(df50s)
-
 
 df50.mod<-df50s %>% 
   group_by(modname) %>% 
@@ -117,19 +115,50 @@ df50.mod<-df50s %>%
 
 summary(df50.mod)
 
+df80.mod<-df80s %>% 
+  group_by(modname) %>% 
+  select(Elevation:RH_at) %>% 
+  summarise_each(funs(mean, sd, se))
+
+
+dfnorms.MSY.mod<-dfnorms.MSY %>% 
+  group_by(modname) %>% 
+  select(Elevation:RH_at) %>% 
+  summarise_each(funs(mean, sd, se))
+
+
 
 # PLOTTING ----------------------------------------------------------------
 
-
+# df50
 ggplot(df50.mod, aes(x = PPT_sp_mean, y = Tmax_sp_mean, color = modname)) + geom_point(size = 8) + 
   geom_errorbarh(aes(xmax = PPT_sp_mean + PPT_sp_sd, 
                      xmin = PPT_sp_mean - PPT_sp_sd), height = .2,lwd=1, alpha = .5) +
   geom_errorbar(aes(ymax = Tmax_sp_mean + Tmax_sp_sd, 
                     ymin = Tmax_sp_mean - Tmax_sp_sd), width=0.5, lwd=1, alpha = .5) +
-  theme_bw() + labs(list(x = "Mean Spring Precip (mm)", y = "Mean Spring max monthly Temp", title = "ClimateNA")) +
+  theme_bw() + labs(list(x = "Mean Spring Precip (mm)", y = "Mean Spring max monthly Temp", title = "ClimateNA 2055")) +
   geom_vline(xintercept = mean(df50.mod$PPT_sp_mean)) + geom_hline(yintercept = mean(df50.mod$Tmax_sp_mean)) 
 
-#geom_text(aes(label = row(dfsum), color = "white", vjust = .4, show_guide = F))
+# df80
+ggplot(df80.mod, aes(x = PPT_sp_mean, y = Tmax_sp_mean, color = modname)) + geom_point(size = 8) + 
+  geom_errorbarh(aes(xmax = PPT_sp_mean + PPT_sp_sd, 
+                     xmin = PPT_sp_mean - PPT_sp_sd), height = .2,lwd=1, alpha = .5) +
+  geom_errorbar(aes(ymax = Tmax_sp_mean + Tmax_sp_sd, 
+                    ymin = Tmax_sp_mean - Tmax_sp_sd), width=0.5, lwd=1, alpha = .5) +
+  theme_bw() + labs(list(x = "Mean Spring Precip (mm)", y = "Mean Spring max monthly Temp", title = "ClimateNA 2085")) +
+  geom_vline(xintercept = mean(df80.mod$PPT_sp_mean)) + geom_hline(yintercept = mean(df80.mod$Tmax_sp_mean)) 
+
+
+# df80
+ggplot(dfnorms.MSY.mod, aes(x = PPT_sp_mean, y = Tmax_sp_mean, color = modname)) + geom_point(size = 8) + 
+  geom_errorbarh(aes(xmax = PPT_sp_mean + PPT_sp_sd, 
+                     xmin = PPT_sp_mean - PPT_sp_sd), height = .2,lwd=1, alpha = .5) +
+  geom_errorbar(aes(ymax = Tmax_sp_mean + Tmax_sp_sd, 
+                    ymin = Tmax_sp_mean - Tmax_sp_sd), width=0.5, lwd=1, alpha = .5) +
+  theme_bw() + labs(list(x = "Mean Spring Precip (mm)", y = "Mean Spring max monthly Temp", title = "ClimateNA 2085")) +
+  geom_vline(xintercept = mean(dfnorms.MSY.mod$PPT_sp_mean)) + geom_hline(yintercept = mean(dfnorms.MSY.mod$Tmax_sp_mean)) 
+
+
 
 
 
