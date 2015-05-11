@@ -150,7 +150,7 @@ ggplot(df80.mod, aes(x = PPT_sp_mean, y = Tmax_sp_mean, color = modname)) + geom
 
 
 # dfNorms
-ggplot(dfnorms.MSY.mod, aes(x = PPT_sp_mean, y = Tmax_sp_mean, color = modname)) + geom_point(size = 8) + 
+ggplot(dfnorms.MSY.mod, aes(x = PPT_sp_mean, y = Tmax_sp_mean, color = modname)) + geom_point(size = 6) + ylim(c(24,28))+
   geom_errorbarh(aes(xmax = PPT_sp_mean + PPT_sp_sd, 
                      xmin = PPT_sp_mean - PPT_sp_sd), height = 0.02,lwd=1, alpha = .5) +
   geom_errorbar(aes(ymax = Tmax_sp_mean + Tmax_sp_sd, 
