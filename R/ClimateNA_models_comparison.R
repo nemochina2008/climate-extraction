@@ -133,33 +133,30 @@ dfnorms.MSY.mod<-dfnorms.MSY %>%
 # df50
 ggplot(df50.mod, aes(x = PPT_sp_mean, y = Tmax_sp_mean, color = modname)) + geom_point(size = 8) + 
   geom_errorbarh(aes(xmax = PPT_sp_mean + PPT_sp_sd, 
-                     xmin = PPT_sp_mean - PPT_sp_sd), height = .2,lwd=1, alpha = .5) +
+                     xmin = PPT_sp_mean - PPT_sp_sd), height = .1,lwd=1, alpha = .5) +
   geom_errorbar(aes(ymax = Tmax_sp_mean + Tmax_sp_sd, 
-                    ymin = Tmax_sp_mean - Tmax_sp_sd), width=0.5, lwd=1, alpha = .5) +
+                    ymin = Tmax_sp_mean - Tmax_sp_sd), height=0.025, lwd=1, alpha = .5) +
   theme_bw() + labs(list(x = "Mean Spring Precip (mm)", y = "Mean Spring max monthly Temp", title = "ClimateNA 2055")) +
   geom_vline(xintercept = mean(df50.mod$PPT_sp_mean)) + geom_hline(yintercept = mean(df50.mod$Tmax_sp_mean)) 
 
 # df80
 ggplot(df80.mod, aes(x = PPT_sp_mean, y = Tmax_sp_mean, color = modname)) + geom_point(size = 8) + 
   geom_errorbarh(aes(xmax = PPT_sp_mean + PPT_sp_sd, 
-                     xmin = PPT_sp_mean - PPT_sp_sd), height = .2,lwd=1, alpha = .5) +
+                     xmin = PPT_sp_mean - PPT_sp_sd), height = .1,lwd=1, alpha = .5) +
   geom_errorbar(aes(ymax = Tmax_sp_mean + Tmax_sp_sd, 
-                    ymin = Tmax_sp_mean - Tmax_sp_sd), width=0.5, lwd=1, alpha = .5) +
+                    ymin = Tmax_sp_mean - Tmax_sp_sd), height=0.04, lwd=1, alpha = .5) +
   theme_bw() + labs(list(x = "Mean Spring Precip (mm)", y = "Mean Spring max monthly Temp", title = "ClimateNA 2085")) +
   geom_vline(xintercept = mean(df80.mod$PPT_sp_mean)) + geom_hline(yintercept = mean(df80.mod$Tmax_sp_mean)) 
 
 
-# df80
+# dfNorms
 ggplot(dfnorms.MSY.mod, aes(x = PPT_sp_mean, y = Tmax_sp_mean, color = modname)) + geom_point(size = 8) + 
   geom_errorbarh(aes(xmax = PPT_sp_mean + PPT_sp_sd, 
-                     xmin = PPT_sp_mean - PPT_sp_sd), height = .2,lwd=1, alpha = .5) +
+                     xmin = PPT_sp_mean - PPT_sp_sd), height = 0.02,lwd=1, alpha = .5) +
   geom_errorbar(aes(ymax = Tmax_sp_mean + Tmax_sp_sd, 
-                    ymin = Tmax_sp_mean - Tmax_sp_sd), width=0.5, lwd=1, alpha = .5) +
-  theme_bw() + labs(list(x = "Mean Spring Precip (mm)", y = "Mean Spring max monthly Temp", title = "ClimateNA 2085")) +
+                    ymin = Tmax_sp_mean - Tmax_sp_sd), height=0.02, lwd=1, alpha = .5) +
+  theme_bw() + labs(list(x = "Mean Spring Precip (mm)", y = "Mean Spring max monthly Temp", title = "ClimateNA Norms")) +
   geom_vline(xintercept = mean(dfnorms.MSY.mod$PPT_sp_mean)) + geom_hline(yintercept = mean(dfnorms.MSY.mod$Tmax_sp_mean)) 
-
-
-
 
 
 # COMPRESS FILES ----------------------------------------------------------
