@@ -9,7 +9,9 @@ library(dplyr)
 library(stringr)
 # library(ggplot2)
 
-fold = "./data/processed/CNA_humboldt_mid_far/"
+fold1 = "./data/processed/CNA_humboldt_near_mid_far/"
+fold2 = "./data/processed/CNA_humboldt_Normals_MSY/"
+fold3 = "./data/processed/CNA_humboldt_1901-2012MSYT/"
 zones = "./data/shps/CA_HUC8_and_all_Region18.shp"
 projection = "+proj=longlat +datum=NAD83"
 outfolder = "./outputs/Humbolt_Bay/"
@@ -17,22 +19,30 @@ outfolder = "./outputs/Humbolt_Bay/"
 # GET FILES AND SPLIT -----------------------------------------------------
 
 # get list of data csvs
-filelist<-list.files(fold,full.names=F)
-filelist
+filelist1<-list.files(fold1,full.names=F) # near mid far
+filelist2<-list.files(fold2,full.names=F) # Humboldt Normals
+filelist3<-list.files(fold3,full.names=F) # fwd pred for 1 model
 
 # clip head and tail of filename
-filenames<-str_sub(filelist,start = 14, end=-5)
-filenames
+filenames1<-str_sub(filelist1,start = 14, end=-5)
+filenames2<-str_sub(filelist2,start = 14, end=-5)
+filenames3<-str_sub(filelist3,start = 14, end=-5)
+filenames1 # modeled near-mid-far
+filenames2 # normals
+filenames3 # one future predicted model
 
-# get only seasonal files (ends in "S")
-seasonal.2050s<-filenames[c(grep("205.S$",filenames))]
-seasonal.2080s<-filenames[c(grep("208.S$",filenames))]
+# get only diff time periods
+s2020s<-filenames1[c(grep("202.",filenames1))]
+s2050s<-filenames1[c(grep("205.",filenames1))]
+s2080s<-filenames1[c(grep("208.",filenames1))]
 
-seasonal.2050s
-seasonal.2080s
+# names (double check)
+s2020s
+s2050s
+s2080s
 
 # get Normals (all metrics: S=seasonal, M=monthly, Y=ann)
-normals.MSY<-filenames[c(grep("^Normal",filenames))]
+normals.MSY<-filenames3[c(grep("^Normal",filenames2))]
 normals.MSY
 
 # MERGE CSVS --------------------------------------------------------------
@@ -61,18 +71,20 @@ read_merge_CNA<-function(datafile,dfoutname){
 }
 
 # use the function
-# seasonal.2050s
-read_merge_CNA(seasonal.2050s,"df50s")
 
-# seasonal.2080s
-read_merge_CNA(seasonal.2080s,"df80s")
+# seasonal.2050s
+read_merge_CNA(s2020s,"df20s")
+# seasonal.2050s
+read_merge_CNA(s2050s,"df50s")
+# s.2080s
+read_merge_CNA(s2080s,"df80s")
 
 # normals.MSY
 read_merge_CNA(normals.MSY,"dfnorms.MSY")
 
 # SIMPLE PLOT OF GIVEN VARIABLE -------------------------------------------
 
-selectmod<-as.character(seasonal.2050s[1])
+selectmod<-as.character(s.2050s[1])
 
 #humboldt<-df50s[df50s$modname==selectmod,]
 humboldt<-dplyr::filter(df50s, modname==selectmod)
