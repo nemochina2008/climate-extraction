@@ -29,7 +29,7 @@ if(Sys.info()[4]=="RYAN-PC") {root<-"C://Users//Ryan//Desktop//Dropbox//R//"} el
 }
 
 
-library(dplyr)
+#library(dplyr)
 library(ggplot2)
 #library(grid)
 #library(scales)
