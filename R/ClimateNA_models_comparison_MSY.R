@@ -162,7 +162,7 @@ ggplot(dfnorms.MSY.mod, aes(x = PPT_sp_mean, y = Tmax_sp_mean, color = modname))
 
 # COMPRESS FILES ----------------------------------------------------------
 
-save(df20s,df20.mod, df50s,df50.mod, df80s, df80.mod, dfnorms.MSY, dfnorms.MSY.mod,file = "./data/processed/CNA_near_mid_far_MSY.RData")
+save(df20s,df20.mod, df50s,df50.mod, df80s, df80.mod, dfnorms.MSY, dfnorms.MSY.mod, climatevars,file = "./data/processed/CNA_near_mid_far_MSY.RData")
 
 
 # DONE!!

@@ -43,11 +43,10 @@ shinyServer(function(input,output) {
   }, options=list(aLengthMenu=c(10,50,100),iDisplayLength=10))
   
   
-  output$metrics = renderDataTable({
-    datametrics<-dats() # need to change this
-    datametrics # need to add
-  }, options=list(aLengthMenu=c(10,50,100),iDisplayLength=10))
-  
+#   output$metrics = renderDataTable({
+#     datametrics<-dats() # need to change this
+#     datametrics # need to add
+#   }, options=list(aLengthMenu=c(10,50,100),iDisplayLength=10))
   
   output$refugemap = renderLeaflet({
     

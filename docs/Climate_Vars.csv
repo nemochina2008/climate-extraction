@@ -1,0 +1,50 @@
+Type,Variables,Description
+Monthly ,Tmin,minimum temperature for a given month (Celsius)
+Monthly ,Tmax,maximum temperature for a given month (Celsius)
+Monthly ,PPT,total precipitation for a given month (mm)
+Biological,MAT,mean annual temperature (Celsius)
+Biological,MCMT,mean temperature of the coldest month (Celsius)
+Biological,MWMT,mean temperature of the warmest month (Celsius)
+Biological,TD,"difference between MCMT and MWMT, as a measure of continentality (Celsius)"
+Biological,MAP,mean annual precipitation (mm)
+Biological,MSP,mean summer (May to Sep) precipitation (mm)
+Biological,AHM,"annual heat moisture index, calculated as (MAT+10)/(MAP/1000)"
+Biological,SHM,"summer heat moisture index, calculated as MWMT/(MSP/1000)"
+Biological,DD.0,degree-days below 0C (chilling degree days)
+Biological,DD.5,degree-days above 5C (growing degree days)
+Biological,NFFD,the number of frost-free days
+Biological,bFFP,the julian date on which the frost-free period begins
+Biological,eFFP,the julian date on which the frost-free period ends
+Biological,PAS,precipitation as snow (mm)
+Biological,EMT,extreme minimum temperature over 30 years
+Biological,Eref,Hargreave's reference evaporation
+Biological,CMD,Hargreave's climatic moisture index
+Biological,CMI,Hogg's climate moisture index
+Biological,cmiJJA,Hogg's summer (Jun to Aug) climate moisture index
+Seasonal,Tave_wt,winter (Dec to Feb) mean temperature (Celsius)
+Seasonal,Tave_sp,spring (Mar to May) mean temperature (Celsius)
+Seasonal,Tave_sm,summer (Jun to Aug) mean temperature (Celsius)
+Seasonal,Tave_sm,autumn (Sep to Nov) mean temperature (Celsius)
+Seasonal,PPT_wt,winter (Dec to Feb) precipitation (mm)
+Seasonal,PPT_sp,spring (Mar to May) precipitation (mm)
+Seasonal,PPT_sm,winter (Dec to Feb) precipitation (mm)
+Seasonal,PPT_at,autumn (Sep to Nov) precipitation (mm)
+Bioclim,BIO01,Annual Mean Temperature
+Bioclim,BIO02,Mean Diurnal Range (Mean of monthly (max temp - min temp))
+Bioclim,BIO03,Isothermality (BIO2/BIO7) (* 100)
+Bioclim,BIO04,Temperature Seasonality (standard deviation *100)
+Bioclim,BIO05,Max Temperature of Warmest Month
+Bioclim,BIO06,Min Temperature of Coldest Month
+Bioclim,BIO07,Temperature Annual Range (BIO5-BIO6)
+Bioclim,BIO08,Mean Temperature of Wettest Quarter
+Bioclim,BIO09,Mean Temperature of Driest Quarter
+Bioclim,BIO10,Mean Temperature of Warmest Quarter
+Bioclim,BIO11,Mean Temperature of Coldest Quarter
+Bioclim,BIO12,Annual Precipitation
+Bioclim,BIO13,Precipitation of Wettest Month
+Bioclim,BIO14,Precipitation of Driest Month
+Bioclim,BIO15,Precipitation Seasonality (Coefficient of Variation)
+Bioclim,BIO16,Precipitation of Wettest Quarter
+Bioclim,BIO17,Precipitation of Driest Quarter
+Bioclim,BIO18,Precipitation of Warmest Quarter
+Bioclim,BIO19,Precipitation of Coldest Quarter

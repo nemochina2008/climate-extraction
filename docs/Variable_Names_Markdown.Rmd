@@ -1,0 +1,43 @@
+---
+title: "Climate Variables"
+author: "UCDavis"
+date: "May 13, 2015"
+output: md_document
+---
+
+#### Climate Variables
+
+ClimateNA variables include annual, seasonal (biological), and monthly metrics. There is a significant amount of overlap (i.e., seasonal bioclimatic variables exist as well as annual bioclimatic variables).
+
+The following table gives all abbreviations and definitions. Standard format for appended variables is as follows:
+
+ - **'at'** : Autumn (Sep-Nov)
+ - **'wt'** : Winter (Dec-Feb)
+ - **'sp'** : spring (Apr-May)
+ - **'sm'** : summer (Jun-Aug)
+ - **'mean'** : mean value
+ - **'sd'** : standard deviation
+ - **'se'** : standard error
+
+
+```{r variables ClimateNA, warning=FALSE, echo=F}
+library(knitr)
+# vals.climatena <- read.csv("./docs/Climate_Vars.csv", header=T)
+# temp <- vals.climatena
+# vals.climatena[1] <- temp[2]
+# vals.climatena[2] <- temp[3]
+# vals.climatena[3] <- temp[1]
+# colnames(vals.climatena) <- c("Variable","Description","Type")
+# str(vals.climatena)
+# h(vals.climatena)
+# vals.climatena
+
+# library(dplyr)
+# climatevars<-vals.climatena
+# climatevars <- arrange(climatevars, Type, Variable)
+
+load(file = "C:/Users/rapeek.AD3/Documents/bitbucket/climate-extraction/data/processed/CNA_near_mid_far_MSY.RData")
+
+kable(as.data.frame(climatevars))
+
+```

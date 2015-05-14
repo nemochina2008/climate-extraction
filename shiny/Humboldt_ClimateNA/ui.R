@@ -46,10 +46,10 @@ shinyUI(fluidPage(
               tabPanel(
                 "Data Summary", verbatimTextOutput("summary"),dataTableOutput("mytable1")
               ),
-#               tabPanel(
-#                 "Metric Definitions", verbatimTextOutput("metrics"),
-#                 column(4, includeMarkdown("include.md"))
-#               ),
+              tabPanel(
+                "Metric Definitions", verbatimTextOutput("metrics"),
+                column(4, includeMarkdown("Climate_Var_Names.md"))
+              ),
               
               tabPanel(
                 "Refuge Location",leafletOutput("refugemap"),
