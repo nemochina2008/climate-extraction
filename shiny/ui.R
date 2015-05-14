@@ -26,7 +26,7 @@ shinyUI(fluidPage(
   sidebarPanel(
     
     selectInput(
-      inputId = "selectRes", label = "Time Frame", c("2020s", "2050s", "2080s")
+      inputId = "selectMod", label = "Time Frame", c("2020s", "2050s", "2080s")
       ),
     
     selectInput(
@@ -41,16 +41,21 @@ shinyUI(fluidPage(
   mainPanel(h4(textOutput("caption")),
             tabsetPanel(
               tabPanel(
-                "Plots", plotOutput("Res"),width = 8,height = 20
+                "Plots", plotOutput("Mod"),width = 8,height = 20
               ),
               tabPanel(
                 "Data Summary", verbatimTextOutput("summary"),dataTableOutput("mytable1")
               ),
+#               tabPanel(
+#                 "Metric Definitions", verbatimTextOutput("metrics"),
+#                 column(4, includeMarkdown("include.md"))
+#               ),
+              
               tabPanel(
-                "Refuge Location",
-                h5("Can add leaflet map here later..."),
-                br(),
-                img(src = "HumboldtBayWaterTrailsMap.png")
+                "Refuge Location",leafletOutput("refugemap"),
+                h5("Climate NA points and Polygon Extent")
+#                 br(),
+#                 img(src = "HumboldtBayWaterTrailsMap.png")
               ),
               tabPanelAbout()
             ))

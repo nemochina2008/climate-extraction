@@ -1,8 +1,10 @@
-#library(plyr)
-#library(dplyr)
+# load(file = "./data/processed/CNA_near_mid_far_MSY.RData")
 
+# Libraries
+library(maptools)
+library(leaflet)
+library(rgdal)
 
-# cmip5 <- read.csv("Data/Allmods_dbasin_vars.csv", header = T, stringsAsFactors = F)
 load(file = "CNA_near_mid_far_MSY.RData")
 
 #vars2<-names(df20.mod)[c(58:80,216:ncol(df20.mod))]

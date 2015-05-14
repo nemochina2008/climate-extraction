@@ -9,14 +9,14 @@ load(file = "./data/processed/CNA_near_mid_far_MSY.RData")
 
 library(dplyr)
 library(stringr)
-# library(ggplot2)
+library(ggplot2)
 
 fold1 = "./data/processed/CNA_humboldt_near_mid_far/"
 fold2 = "./data/processed/CNA_humboldt_Normals_MSY/"
 fold3 = "./data/processed/CNA_humboldt_1901-2012MSYT/"
-zones = "./data/shps/CA_HUC8_and_all_Region18.shp"
-projection = "+proj=longlat +datum=NAD83"
-outfolder = "./outputs/Humboldt_Bay/"
+# zones = "./data/shps/CA_HUC8_and_all_Region18.shp"
+# projection = "+proj=longlat +datum=NAD83"
+# outfolder = "./outputs/Humboldt_Bay/"
 
 # GET FILES AND SPLIT -----------------------------------------------------
 
