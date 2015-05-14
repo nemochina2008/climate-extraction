@@ -15,3 +15,9 @@ varLookup <- data.frame("variable.short" = c("MAT", "MWMT","MCMT", "TD", "MAP", 
 
 varLookup$variable.mean <- paste(varLookup$variable.short, "_mean", sep = "")
 varLookup$variable.se <- paste(varLookup$variable.short, "_se", sep = "")
+
+# running shiny app: Update package first
+# devtools::install_github('rstudio/shinyapps')
+# library(shinyapps)
+# shinyapps::deployApp('path/to/your/app')
+# shinyapps::deployApp("./shiny/Humboldt_ClimateNA")
