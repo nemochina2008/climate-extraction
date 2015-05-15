@@ -11,6 +11,9 @@ shinyServer(function(input,output) {
       if(input$selectMod == "2050s"){dats <- df50.mod}
       else {
         if(input$selectMod == "2080s"){dats <- df80.mod}
+        else {
+          if(input$selectMod == "Historic"){dats <- dfnorms.MSY.mod}
+        }
       }
     }
   })
@@ -31,7 +34,7 @@ shinyServer(function(input,output) {
                                ymin = paste(yvarmean, "-", yvarse)), width = .02, alpha = .5) +
       theme_bw() + labs(list(x = input$xvar,y = input$yvar)) +
       geom_vline(xintercept = mean(dats()[,xvarmean]), alpha = .5) +
-      geom_hline(yintercept = mean(dats()[,xvarmean]), alpha = .5) # +
+      geom_hline(yintercept = mean(dats()[,yvarmean]), alpha = .5) # +
     #       geom_text(aes(label = ID), color = "white", vjust = .4, show_guide = F)
     return(p)
   })
@@ -43,10 +46,10 @@ shinyServer(function(input,output) {
   }, options=list(aLengthMenu=c(10,50,100),iDisplayLength=10))
   
   
-#   output$metrics = renderDataTable({
-#     datametrics<-dats() # need to change this
-#     datametrics # need to add
-#   }, options=list(aLengthMenu=c(10,50,100),iDisplayLength=10))
+  output$metrics = renderDataTable({
+    datametrics<-climatevars 
+    datametrics
+  }, options=list(aLengthMenu=c(30,50),iDisplayLength=30))
   
   output$refugemap = renderLeaflet({
     

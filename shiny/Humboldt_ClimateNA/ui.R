@@ -21,14 +21,15 @@ shinyUI(fluidPage(
     ), h3, NULL
     ),
   
-  titlePanel("Humbolt Bay Climate NA Model Projections"),
+  titlePanel("Humboldt Bay Climate NA Model Projections"),
   
   sidebarPanel(
-    
+    helpText("ClimateNA data is 1 km PRISM downscaled CMIP5 data. Approximately 490 grid points were aggregated within the Humboldt NFWR Extent for these plots"),
     selectInput(
-      inputId = "selectMod", label = "Time Frame", c("2020s", "2050s", "2080s")
+      inputId = "selectMod", label = "Time Period", c("2020s", "2050s", "2080s", "Historic")
       ),
-    
+    br(),
+    helpText("Pick a variable to plot (see Metric Definitions Tab for details)"),
     selectInput(
       inputId="xvar",choices=as.character(vars2),label="X Variable"),
     
@@ -43,12 +44,12 @@ shinyUI(fluidPage(
               tabPanel(
                 "Plots", plotOutput("Mod"),width = 8,height = 20
               ),
+#               tabPanel(
+#                 "Data Summary", verbatimTextOutput("summary"),dataTableOutput("mytable1")
+              # ),
               tabPanel(
-                "Data Summary", verbatimTextOutput("summary"),dataTableOutput("mytable1")
-              ),
-              tabPanel(
-                "Metric Definitions", verbatimTextOutput("metrics"),
-                column(4, includeMarkdown("Climate_Var_Names.md"))
+                "Metric Definitions",includeMarkdown("Climate_Var_Names.md"), 
+                dataTableOutput("metrics")
               ),
               
               tabPanel(

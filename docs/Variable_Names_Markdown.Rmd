@@ -21,7 +21,7 @@ The following table gives all abbreviations and definitions. Standard format for
 
 
 ```{r variables ClimateNA, warning=FALSE, echo=F}
-library(knitr)
+#library(knitr)
 # vals.climatena <- read.csv("./docs/Climate_Vars.csv", header=T)
 # temp <- vals.climatena
 # vals.climatena[1] <- temp[2]
@@ -36,8 +36,8 @@ library(knitr)
 # climatevars<-vals.climatena
 # climatevars <- arrange(climatevars, Type, Variable)
 
-load(file = "C:/Users/rapeek.AD3/Documents/bitbucket/climate-extraction/data/processed/CNA_near_mid_far_MSY.RData")
-
-kable(as.data.frame(climatevars))
+# load(file = "C:/Users/rapeek.AD3/Documents/bitbucket/climate-extraction/data/processed/CNA_near_mid_far_MSY.RData")
+# print(climatevars)
+#kable(as.data.frame(climatevars))
 
 ```
