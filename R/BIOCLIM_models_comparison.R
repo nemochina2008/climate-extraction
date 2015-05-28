@@ -1,9 +1,8 @@
 ## BIOClimate  and Plot
 ## R Peek 2015
 
-
-
 # load(file = "./data/processed/CNA_near_mid_far_MSY.RData")
+load(file = "./data/processed/bioclim_50_70.RData")
 
 # LOAD LIBRARIES and LOCATIONS --------------------------------------------
 
@@ -12,26 +11,32 @@ library(readr)
 library(stringr)
 library(ggplot2)
 
-
 # GET FILES AND SPLIT -----------------------------------------------------
 
-bioc = read_csv("./data/processed/HBNWR_Bioclim_10kmbuffer.csv")
+dat = read_csv("./data/processed/HBNWR_Bioclim_10kmbuffer.csv")
 
-h(bioc)
-bioc$biovar<-paste0("BIO_",bioc$bio)
-names(bioc)
+h(dat)
+dat$biovar<-paste0("BIO_",dat$bio)
+names(dat)
 
 # make a list of all temperature variables for converting (C x 10), precip in mm
-tempnames<-unique(df50.mod$bioclimname)
+bioclimnames<-unique(dat$bioclimname)
+bioclimnames
 # grep for temp cols
-temponly<-tempnames[c(grep("Temp",tempnames))]
-temponly<-temponly[,c(4)]
+temponly<-bioclimnames[c(grep("Temp",bioclimnames))]
+temponly<-temponly[-4]
+temponly
 
+# convert the temperatures to temperature (/10)
+tempdf<-dat[dat$bioclimname %in% temponly,]
+nontemp<-dat[!dat$bioclimname %in% temponly,]
+tempdf$Value<-tempdf$Value/10
+s(tempdf)
+bioc<-bind_rows(nontemp, tempdf)
 
 # SUMMARIZING -------------------------------------------------------------
 
-
-# use dplyr magic to calc mean, sd, and se 
+# use dplyr magic to calc mean, and se 
 
 # set up standard error function
 se<-function(x) {sd(x)/sqrt(length(x))}
@@ -43,13 +48,11 @@ df50.mod<-bioc %>%
   summarise_each(funs(mean, se))
 h(df50.mod)
 
-
-
 df70.mod<-bioc %>% 
   filter(yr==70) %>% 
   group_by(model, biovar, bioclimname) %>% 
   select(Value) %>% 
-  summarise_each(funs(mean, sd, se))
+  summarise_each(funs(mean, se))
 
 # need to spread data and merge for plotting
 library(tidyr)
@@ -60,11 +63,6 @@ df50.mean<-df50.mod %>%
   spread(key=biovar, mean)
 colnames(df50.mean)[2:20]<-paste0(colnames(df50.mean)[2:20],"_mean")
 h(df50.mean)
-
-df50.sd<-df50.mod %>% 
-  select(model, biovar, sd) %>% 
-  spread(key=biovar, sd)
-colnames(df50.sd)[2:20]<-paste0(colnames(df50.sd)[2:20],"_sd")
 
 df50.se<-df50.mod %>% 
   select(model, biovar, se) %>% 
@@ -84,11 +82,6 @@ df70.mean<-df70.mod %>%
 colnames(df70.mean)[2:20]<-paste0(colnames(df70.mean)[2:20],"_mean")
 h(df70.mean)
 
-df70.sd<-df70.mod %>% 
-  select(model, biovar, sd) %>% 
-  spread(key=biovar, sd)
-colnames(df70.sd)[2:20]<-paste0(colnames(df70.sd)[2:20],"_sd")
-
 df70.se<-df70.mod %>% 
   select(model, biovar, se) %>% 
   spread(key=biovar, se)
@@ -99,21 +92,32 @@ dff70<-as.data.frame(dff70)
 dim(dff70)
 h(dff70)
 
+
+
 # PLOTTING ----------------------------------------------------------------
+# s(dff70[,1:20])
+# 
+# [1] "Annual Mean Temp"             "Mean Temp of Warmest Quarter"
+# [3] "Mean Temp of Coldest Quarter" "Ann Precip"                  
+# [5] "Precip of Wettest Month"      "Precip of Driest Month"      
+# [7] "Precip Seasonality"           "Precip of Wettest Quarter"   
+# [9] "Precip of Driest Quarter"     "Precip of Warmest Quarter"   
+# [11] "Precip of Coldest Quarter"    "Mean Diurnal Range"          
+# [13] "Isothermality"                "Temp Seasonality"            
+# [15] "Max Temp of Warmest Month"    "Min Temp of Coldest Month"   
+# [17] "Temp Annual Range"            "Mean Temp of Wettest Quarter"
+# [19] "Mean Temp of Driest Quarter" 
+# 
 
-tempnames
 
 # df50
-ggplot(dff70, aes(x =  BIO_1_mean, y = BIO_2_mean, color = model)) + geom_point(size = 8) +  theme_bw()
-
-# df50
-ggplot(dff70, aes(x = BIO_1_mean, y = BIO_2_mean, color = model)) + geom_point(size = 8) + 
-  geom_errorbarh(aes(xmax = BIO_1_mean + BIO_1_se, 
-                     xmin = BIO_1_mean - BIO_1_se), height = .1,lwd=1, alpha = .5) +
+ggplot(dff70, aes(x = BIO_15_mean, y = BIO_2_mean, color = model)) + geom_point(size = 8) + 
+  geom_errorbarh(aes(xmax = BIO_15_mean + BIO_15_se, 
+                     xmin = BIO_15_mean - BIO_15_se), height = .1,lwd=1, alpha = .5) +
   geom_errorbar(aes(ymax = BIO_2_mean + BIO_2_se, 
                     ymin = BIO_2_mean - BIO_2_se), height=0.025, lwd=1, alpha = .5) +
-  theme_bw() +# labs(list(x = "Mean Spring Precip (mm)", y = "Mean Spring max monthly Temp", title = "ClimateNA 2055")) +
-  geom_vline(xintercept = mean(dff70$BIO_1_mean)) + geom_hline(yintercept = mean(dff70$BIO_2_mean)) 
+  theme_bw() + labs(list(title = "BIOCLIM 2050")) +
+  geom_vline(xintercept = mean(dff70$BIO_15_mean)) + geom_hline(yintercept = mean(dff70$BIO_2_mean)) 
 
 # df80
 ggplot(df80.mod, aes(x = PPT_sp_mean, y = Tmax_sp_mean, color = modname)) + geom_point(size = 8) + 
@@ -125,18 +129,13 @@ ggplot(df80.mod, aes(x = PPT_sp_mean, y = Tmax_sp_mean, color = modname)) + geom
   geom_vline(xintercept = mean(df80.mod$PPT_sp_mean)) + geom_hline(yintercept = mean(df80.mod$Tmax_sp_mean)) 
 
 # dfNorms
-ggplot(dfnorms.MSY.mod, aes(x = PPT_sp_mean, y = Tmax_sp_mean, color = modname)) + geom_point(size = 6) + ylim(c(24,28))+
-  geom_errorbarh(aes(xmax = PPT_sp_mean + PPT_sp_sd, 
-                     xmin = PPT_sp_mean - PPT_sp_sd), height = 0.02,lwd=1, alpha = .5) +
-  geom_errorbar(aes(ymax = Tmax_sp_mean + Tmax_sp_sd, 
-                    ymin = Tmax_sp_mean - Tmax_sp_sd), height=0.02, lwd=1, alpha = .5) +
-  theme_bw() + labs(list(x = "Mean Spring Precip (mm)", y = "Mean Spring max monthly Temp", title = "ClimateNA Norms")) +
-  geom_vline(xintercept = mean(dfnorms.MSY.mod$PPT_sp_mean)) + geom_hline(yintercept = mean(dfnorms.MSY.mod$Tmax_sp_mean)) 
+ggplot(df70.mod[df70.mod$biovar=="BIO_1" | df70.mod$biovar=="BIO_2",], aes(x = biovar, y = biovar, color = model)) + geom_point(size = 6) + 
+  theme_bw() 
 
 
 # COMPRESS FILES ----------------------------------------------------------
 
-save(df20s,df20.mod, df50s,df50.mod, df80s, df80.mod, dfnorms.MSY, dfnorms.MSY.mod, climatevars,file = "./data/processed/CNA_near_mid_far_MSY.RData")
+save(bioc, df50.mod,df70.mod, dff50, dff70, bioclimnames,file = "./data/processed/bioclim_50_70.RData")
 
 
 # DONE!!
