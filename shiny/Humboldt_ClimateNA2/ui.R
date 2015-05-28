@@ -24,14 +24,12 @@ shinyUI(fluidPage(
   titlePanel("Humboldt Bay Climate NA Model Projections"),
   
   sidebarPanel(
-    helpText("ClimateNA data is 1 km PRISM downscaled CMIP5 data. Approximately 490 grid points were aggregated within the Humboldt NFWR Extent for these plots"
-	),
-	
+    helpText("ClimateNA data is 1 km PRISM downscaled CMIP5 data. Approximately 490 grid points were aggregated within the Humboldt NFWR Extent for these plots"),
     selectInput(
       inputId = "selectMod", label = "Time Period", c("2020s", "2050s", "2080s", "Historic")
       ),
     br(),
-	helpText("Pick a variable to plot (see Metric Definitions Tab for details)"),
+    helpText("Pick a variable to plot (see Metric Definitions Tab for details)"),
     selectInput(
       inputId="xvar",choices=as.character(vars2),label="X Variable"),
     
@@ -46,19 +44,19 @@ shinyUI(fluidPage(
               tabPanel(
                 "Plots", plotOutput("Mod"),width = 8,height = 20
               ),
-#              tabPanel(
-#                "Data Summary", verbatimTextOutput("summary"),dataTableOutput("mytable1")
-#              ),
-tabPanel(
+#               tabPanel(
+#                 "Data Summary", verbatimTextOutput("summary"),dataTableOutput("mytable1")
+              # ),
+              tabPanel(
                 "Metric Definitions",includeMarkdown("Climate_Var_Names.md"), 
                 dataTableOutput("metrics")
               ),
               
               tabPanel(
-                "Refuge Location",#leafletOutput("refugemap"),
-                h5("Humboldt Bay Trails Map"),
-                br(),
-                img(src = "HumboldtBayWaterTrailsMap.png")
+                "Refuge Location",leafletOutput("refugemap"),
+                h5("Climate NA points and Polygon Extent")
+#                 br(),
+#                 img(src = "HumboldtBayWaterTrailsMap.png")
               ),
               tabPanelAbout()
             ))

@@ -1,22 +1,20 @@
 # load(file = "./data/processed/CNA_near_mid_far_MSY.RData")
 
 # Libraries
-library(maptools)
-library(leaflet)
-library(rgdal)
+#library(maptools)
+#library(leaflet)
+#library(rgdal)
 library(markdown)
-#library(knitr)
+library(knitr)
 
 load(file = "CNA_near_mid_far_MSY.RData")
 load(file = "bioclim_50_70.RData")
-# load(file = "./data/processed/bioclim_50_70.RData")
+
 
 #vars2<-names(df20.mod)[c(58:80,216:ncol(df20.mod))]
-# vars1<-names(dff50)[c(2:20)]
-# vars2<-sub(pattern = "_mean",replacement = "",vars1)
-# 
+vars1<-names(dff50)[c(2:20)]
+vars2<-sub(pattern = "_mean",replacement = "",vars1)
 # vars2<-vars2[c(1,12:19,2:11)]
-# vars2
 
 varLookup <- data.frame("variable.short" = vars2,"variable.long" = bioclimnames, stringsAsFactors = F)
 varLookup$variable.mean <- paste(varLookup$variable.short, "_mean", sep = "")

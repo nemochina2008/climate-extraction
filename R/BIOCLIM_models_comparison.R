@@ -22,21 +22,37 @@ names(dat)
 # make a list of all temperature variables for converting (C x 10), precip in mm
 bioclimnames<-unique(dat$bioclimname)
 bioclimnames
-# grep for temp cols
-temponly<-bioclimnames[c(grep("Temp",bioclimnames))]
-temponly<-temponly[-4]
-temponly
+# get temp cols
+temponly<-bioclimnames[c(1:3,12,15:19)] # isothermality is a percent, seasonality prob needs/100
+(temponly)
 
-# convert the temperatures to temperature (/10)
-tempdf<-dat[dat$bioclimname %in% temponly,]
-nontemp<-dat[!dat$bioclimname %in% temponly,]
-tempdf$Value<-tempdf$Value/10
-s(tempdf)
-bioc<-bind_rows(nontemp, tempdf)
+# ISOTHERMALITY: Isothermality the ratio of the mean diurnal range (Bio 2) 
+# to the annual temperature range (Bio 7), and then multiplying by 100. 
+# Isothermality quantifies how large the day-tonight
+# temperatures oscillate relative to the summerto-winter
+# (annual) oscillations. An isothermal value of
+# 100 indicates the diurnal temperature range is equivalent
+# to the annual temperature range, while anything
+# less than 100 indicates a smaller level of temperature
+# variability within an average month relative to the
+# year. A species distribution may be influenced by
+# larger or smaller temperature fluctuations within a
+# month relative to the year and this predictor is useful
+# for ascertaining such information
+
+
+# divide all temperature columns by 10
+dat[dat$bioclimname %in% temponly,2] <- dat[dat$bioclimname %in% temponly,2] / 10
+s(dat[dat$bioclimname %in% temponly,2])
+# divide all seasonality by 100 (just for scaling reasons)
+dat[dat$bioclimname == "Temp Seasonality",2] <- dat[dat$bioclimname == "Temp Seasonality",2] / 100
+s(dat[dat$bioclimname == "Temp Seasonality",2])
 
 # SUMMARIZING -------------------------------------------------------------
 
 # use dplyr magic to calc mean, and se 
+
+bioc<-dat
 
 # set up standard error function
 se<-function(x) {sd(x)/sqrt(length(x))}
@@ -71,9 +87,10 @@ colnames(df50.se)[2:20]<-paste0(colnames(df50.se)[2:20],"_se")
 
 dff50<-inner_join(df50.mean,df50.se,by="model")
 dff50<-as.data.frame(dff50)
+#dff501<-cbind(df50.mean,df50.se[,2:20])
+
 dim(dff50)
 h(dff50)
-
 
 # 70 Year
 df70.mean<-df70.mod %>% 
@@ -95,7 +112,6 @@ h(dff70)
 
 
 # PLOTTING ----------------------------------------------------------------
-# s(dff70[,1:20])
 # 
 # [1] "Annual Mean Temp"             "Mean Temp of Warmest Quarter"
 # [3] "Mean Temp of Coldest Quarter" "Ann Precip"                  
