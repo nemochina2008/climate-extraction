@@ -25,8 +25,6 @@ shinyUI(fluidPage(
         
 #           selectInput(inputId = "xvar", label = "X variable", choices = c("MAT", "MWMT", "MAP", "MWMP", "MDMP", "TMAX_WT", "PPT_WT", "PPT_SM", "AHM", "SHM")),
           selectInput(inputId = "xvar", label = "X variable", choices = as.character(varLookup$variable.long)),
-#           selectInput(inputId = "yvar", label = "Y variable", c("MAT", "MWMT", "MCMT", "MAP", "MWMP", "MDMP", "TMAX_WT", "PPT_WT", "PPT_SM", "AHM", "SHM"),
-#                       selected = "MAP")),
           selectInput(inputId = "yvar", label = "Y variable", choices = as.character(varLookup$variable.long),
                 selected = "Mean Annual Precip")),
   

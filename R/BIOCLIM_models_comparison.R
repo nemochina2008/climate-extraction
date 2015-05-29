@@ -14,10 +14,16 @@ library(ggplot2)
 # GET FILES AND SPLIT -----------------------------------------------------
 
 dat = read_csv("./data/processed/HBNWR_Bioclim_10kmbuffer.csv")
+gcmdat = read_csv("./data/BIOCLIM_Model_Codes.csv")
+
+dim(gcmdat)
+gcmdat<-filter(gcmdat, Overlap=="both"| Overlap=="BC")
 
 h(dat)
 dat$biovar<-paste0("BIO_",dat$bio)
-names(dat)
+h(dat)
+
+
 
 # make a list of all temperature variables for converting (C x 10), precip in mm
 bioclimnames<-unique(dat$bioclimname)
@@ -25,6 +31,8 @@ bioclimnames
 # get temp cols
 temponly<-bioclimnames[c(1:3,12,15:19)] # isothermality is a percent, seasonality prob needs/100
 (temponly)
+
+# FROM USGS: http://pubs.usgs.gov/ds/691/ds691.pdf
 
 # ISOTHERMALITY: Isothermality the ratio of the mean diurnal range (Bio 2) 
 # to the annual temperature range (Bio 7), and then multiplying by 100. 
@@ -39,6 +47,8 @@ temponly<-bioclimnames[c(1:3,12,15:19)] # isothermality is a percent, seasonalit
 # larger or smaller temperature fluctuations within a
 # month relative to the year and this predictor is useful
 # for ascertaining such information
+
+
 
 
 # divide all temperature columns by 10
@@ -87,8 +97,8 @@ colnames(df50.se)[2:20]<-paste0(colnames(df50.se)[2:20],"_se")
 
 dff50<-inner_join(df50.mean,df50.se,by="model")
 dff50<-as.data.frame(dff50)
-#dff501<-cbind(df50.mean,df50.se[,2:20])
-
+dff50<-inner_join(dff50,gcmdat, by=c("model"= "GCM_code"))
+dff50 <- 
 dim(dff50)
 h(dff50)
 
@@ -108,7 +118,7 @@ dff70<-inner_join(df70.mean,df70.se,by="model")
 dff70<-as.data.frame(dff70)
 dim(dff70)
 h(dff70)
-
+dff70<-inner_join(dff70,gcmdat, by=c("model"= "GCM_code"))
 
 
 # PLOTTING ----------------------------------------------------------------
@@ -151,7 +161,7 @@ ggplot(df70.mod[df70.mod$biovar=="BIO_1" | df70.mod$biovar=="BIO_2",], aes(x = b
 
 # COMPRESS FILES ----------------------------------------------------------
 
-save(bioc, df50.mod,df70.mod, dff50, dff70, bioclimnames,file = "./data/processed/bioclim_50_70.RData")
+save(bioc, dff50, dff70, bioclimnames,file = "./data/processed/bioclim_50_70.RData")
 
 
 # DONE!!

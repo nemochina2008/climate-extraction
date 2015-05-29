@@ -21,43 +21,67 @@ shinyUI(fluidPage(
     ), h3, NULL
     ),
   
-  titlePanel("Humboldt Bay BIOCLIM Model Projections"),
+  titlePanel("Humboldt Bay GCM Data: Model Projections"),
   
   sidebarPanel(
-    helpText("BIOCLIM data is 4 km? data. This is clipped to the Humboldt NFWR Extent for these plots"),
-    selectInput(
-      inputId = "selectMod", label = "Time Period", c("2050s", "2070s")
-      ),
-    br(),
-    helpText("Pick a variable to plot (see Metric Definitions Tab for details)"),
-    selectInput(
-      inputId="xvar",choices=as.character(varLookup$variable.long),label="X Variable"),
+    helpText("This data represents GCMs from different datasets and scales. However, all data has been clipped or aggregated to the Humboldt NFWR Extent in these plots"),
     
-    selectInput(
-      inputId="yvar",choices=as.character(varLookup$variable.long),label="Y Variable"
-      )
+    selectInput("GCM",label = "Select a GCM Dataset",
+                 choices=c("BIOCLIM","ClimateNA","CMIP5"),selected="BIOCLIM"),
+    conditionalPanel(condition = "input.GCM == BIOCLIM",
+                     selectInput(
+                       inputId = "selectBIO", label = "Time Period", 
+                       choices = c("2050s", "2070s")
+                       ),
+                     br(),
+                     helpText("Pick a variable to plot (see Metric Definitions Tab for details)"),
+                     selectInput(
+                       inputId="xvar",label="X Variable",
+                       choices=as.character(varLookupBC$variable.long)
+                       ),
+                     
+                     selectInput(
+                       inputId="yvar",label="Y Variable",
+                       choices=as.character(varLookupBC$variable.long)
+                       )),
+    conditionalPanel(condition = "input.GCM == ClimateNA",
+                     selectInput(
+                       inputId = "selectCNA", label = "Time Period", 
+                       choices = c("2020s", "2050s", "2080s", "Historic")
+                       ),
+                     br(),
+                     helpText("Pick a variable to plot (see Metric Definitions Tab for details)"),
+                     selectInput(
+                       inputId="xvar",choices=as.character(varsNA2),label="X Variable"),
+                     
+                     selectInput(
+                       inputId="yvar",choices=as.character(varsNA2),label="Y Variable"
+                     )),
+    conditionalPanel(condition = "input.GCM == CMIP5",
+                     selectInput(inputId = "selectCMIP5", label = "Time block", 
+                                 choices=c("2021", "2051")),
+                     selectInput(inputId = "xvar", label = "X variable", 
+                                 choices = as.character(varLookup$variable.long)),
+                     selectInput(inputId = "yvar", label = "Y variable", 
+                                 choices = as.character(varLookup$variable.long),
+                                 selected = "Mean Annual Precip")
+                     )
+
   ),
     
+  
+  
+  
   
   mainPanel(h4(textOutput("caption")),
             tabsetPanel(
               tabPanel(
-                "Plots", plotOutput("Mod"),width = 8,height = 20
+                "modPlot", plotOutput("GCM Plot"),width = 8,height = 20
               ),
-#               tabPanel(
-#                 "Data Summary", verbatimTextOutput("summary"),dataTableOutput("mytable1")
-              # ),
               tabPanel(
                 "Metric Definitions",includeMarkdown("Climate_Var_Names.md"), 
                 dataTableOutput("metrics")
               ),
-              
-#               tabPanel(
-#                 "Refuge Location",leafletOutput("refugemap"),
-#                 h5("Climate NA points and Polygon Extent")
-#                 br(),
-#                 img(src = "HumboldtBayWaterTrailsMap.png")
-#              ),
               tabPanelAbout()
             ))
 ))
