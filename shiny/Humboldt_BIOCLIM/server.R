@@ -5,117 +5,96 @@ library(ggplot2)
 
 shinyServer(function(input,output) { 
   
-  reactive({if(input$GCM == "BIOCLIM"){
+  output$modPlot <- renderPlot({
     
-    # BIOCLIM
-    datsBIOCLIM <- reactive({
-      if(input$selectBIO == "2050s"){dats <- dff50}
-      else {
-        if(input$selectBIO == "2070s"){dats <- dff70}
-      }
-    })
-    
-    output$modPlot <- renderPlot({ 
+    if(input$BIOCLIM == TRUE){
+      # BIOCLIM
+      datsBIOCLIM <- reactive({
+        if(input$selectBIO == "2050s"){dats <- dff50}
+        else {
+          if(input$selectBIO == "2070s"){dats <- dff70}
+        }
+      })
       
       xvarmean <- varLookupBC[varLookupBC$variable.long == input$xvar, 3]
       yvarmean <- varLookupBC[varLookupBC$variable.long == input$yvar, 3]
       xvarse <- varLookupBC[varLookupBC$variable.long == input$xvar, 4]
       yvarse <- varLookupBC[varLookupBC$variable.long == input$yvar, 4]
-      
+        
       pBIO <- ggplot(datsBIOCLIM(), aes_string(x = xvarmean, y = yvarmean, color = "GCM")) + geom_point(size = 4) +
         geom_errorbarh(aes_string(xmax = paste(xvarmean, "+", xvarse), xmin = paste(xvarmean, "-", xvarse)), height = .02, alpha = .5) +
         geom_errorbar(aes_string(ymax = paste(yvarmean,"+", yvarse), ymin = paste(yvarmean, "-", yvarse)), width = .02, alpha = .5) +
         theme_bw() + labs(list(x = varLookupBC[varLookupBC$variable.long == input$xvar, 2], y = varLookupBC[varLookupBC$variable.long == input$yvar, 2])) +
         geom_vline(xintercept = mean(datsBIOCLIM()[,varLookupBC[varLookupBC$variable.long == input$xvar, 3]]), alpha = .5) + 
-        geom_hline(yintercept = mean(datsBIOCLIM()[,varLookupBC[varLookupBC$variable.long == input$yvar, 3]]), alpha = .5) 
-      
-      
+        geom_hline(yintercept = mean(datsBIOCLIM()[,varLookupBC[varLookupBC$variable.long == input$yvar, 3]]), alpha = .5)
       return(pBIO)
-    })
-  } else {
-    if(input$GCM == "ClimateNA"){
       
-      
-      
-      
-      # CLIMATENA
-      datsCNA <- reactive({
-        if(input$selectCNA == "2020s"){datsCNA <- df20.mod}
-        else {
-          if(input$selectCNA == "2050s"){datsCNA <- df50.mod}
-          else {
-            if(input$selectCNA == "2080s"){datsCNA <- df80.mod}
+      } else {
+        if(input$ClimateNA== TRUE){
+          # CLIMATENA
+          datsCNA <- reactive({
+            if(input$selectCNA == "2020s"){datsCNA <- df20.mod}
             else {
-              if(input$selectCNA == "Historic"){datsCNA <- dfnorms.MSY.mod}
+              if(input$selectCNA == "2050s"){datsCNA <- df50.mod}
+              else {
+                if(input$selectCNA == "2080s"){datsCNA <- df80.mod}
+                else {
+                  if(input$selectCNA == "Historic"){datsCNA <- dfnorms.MSY.mod}
+                }
+              }
+            }
+          })
+          xvarmean <- paste0(input$xvar, "_mean")
+          yvarmean <- paste0(input$yvar, "_mean")
+          xvarse <- paste0(input$xvar, "_se")
+          yvarse <- paste0(input$yvar, "_se")
+        
+          pCNA <-ggplot(datsCNA(), aes_string(x = xvarmean, y = yvarmean, color = "modname")) + 
+            geom_point(size = 4) + geom_errorbarh(aes_string(
+              xmax = paste(xvarmean, "+", xvarse), 
+              xmin = paste(xvarmean, "-", xvarse)), height = .02, alpha = .5) + 
+            geom_errorbar(aes_string(ymax = paste(yvarmean,"+", yvarse),
+                                     ymin = paste(yvarmean, "-", yvarse)), width = .02, alpha = .5) +
+            theme_bw() + labs(list(x = input$xvar,y = input$yvar)) +
+            geom_vline(xintercept = mean(datsCNA()[,xvarmean]), alpha = .5) +
+            geom_hline(yintercept = mean(datsCNA()[,yvarmean]), alpha = .5)
+          return(pCNA)
+          
+          } else {
+            if(input$CMIP5 == TRUE){
+              
+              # CMIP5
+              datsCMIP5 <- reactive({
+                if(input$selectCMIP5 == "2020s"){
+                  datsCMIP5 <- cmip5ply[cmip5ply$cuts == "2021-2050",]
+                } else { 
+                  if(input$selectCMIP5 == "2050s") {datsCMIP5 <- cmip5ply[cmip5ply$cuts == "2051-2080",]}
+                }
+              })
+              
+              xvarmean <- varLookup[varLookup$variable.long == input$xvar, 3]
+              yvarmean <- varLookup[varLookup$variable.long == input$yvar, 3]
+              xvarse <- varLookup[varLookup$variable.long == input$xvar, 4]
+              yvarse <- varLookup[varLookup$variable.long == input$yvar, 4]
+              
+              pCMIP <- ggplot(datsCMIP5(), aes_string(x = xvarmean, y = yvarmean, color = "model")) + geom_point(size = 4) +
+                geom_errorbarh(aes_string(xmax = paste(xvarmean, "+", xvarse), xmin = paste(xvarmean, "-", xvarse)), height = .02, alpha = .5) +
+                geom_errorbar(aes_string(ymax = paste(yvarmean,"+", yvarse), ymin = paste(yvarmean, "-", yvarse)), width = .02, alpha = .5) +
+                theme_bw() + labs(list(x = varLookup[varLookup$variable.long == input$xvar, 2], y = varLookup[varLookup$variable.long == input$yvar, 2])) +
+                geom_vline(xintercept = mean(datsCMIP5()[,varLookup[varLookup$variable.long == input$xvar, 3]]), alpha = .5) + 
+                geom_hline(yintercept = mean(datsCMIP5()[,varLookup[varLookup$variable.long == input$yvar, 3]]), alpha = .5)
+              return(pCMIP)
             }
           }
         }
       })
-      
-      output$modPlot <- renderPlot({
-        
-        xvarmean <- paste0(input$xvar, "_mean")
-        yvarmean <- paste0(input$yvar, "_mean")
-        xvarse <- paste0(input$xvar, "_se")
-        yvarse <- paste0(input$yvar, "_se")
-        
-        pCNA <-ggplot(datsCNA(), aes_string(x = xvarmean, y = yvarmean, color = "modname")) + 
-          geom_point(size = 4) +
-          geom_errorbarh(aes_string(
-            xmax = paste(xvarmean, "+", xvarse), 
-            xmin = paste(xvarmean, "-", xvarse)), height = .02, alpha = .5) +
-          geom_errorbar(aes_string(ymax = paste(yvarmean,"+", yvarse), 
-                                   ymin = paste(yvarmean, "-", yvarse)), width = .02, alpha = .5) +
-          theme_bw() + labs(list(x = input$xvar,y = input$yvar)) +
-          geom_vline(xintercept = mean(datsCNA()[,xvarmean]), alpha = .5) +
-          geom_hline(yintercept = mean(datsCNA()[,yvarmean]), alpha = .5) # +
-        #       geom_text(aes(label = ID), color = "white", vjust = .4, show_guide = F)
-        return(pCNA)
-      })
-    } else {
-      if(input$GCM == "CMIP5"){
-        
-        
-        
-        # CMIP5
-        datsCMIP5 <- reactive({
-          if(input$selectCMIP5 == "2021"){datsCMIP5 <- cmip5ply[cmip5ply$cuts == "2021-2050",]}
-          else{datsCMIP5 <- cmip5ply[cmip5ply$cuts == "2051-2080",]}
-        })
-        
-        
-        output$modPlot <- renderPlot({
-          
-          xvarmean <- varLookup[varLookup$variable.long == input$xvar, 3]
-          yvarmean <- varLookup[varLookup$variable.long == input$yvar, 3]
-          xvarse <- varLookup[varLookup$variable.long == input$xvar, 4]
-          yvarse <- varLookup[varLookup$variable.long == input$yvar, 4]
-          
-          pCMIP <- ggplot(datsCMIP5(), aes_string(x = xvarmean, y = yvarmean, color = "model")) + geom_point(size = 4) +
-            geom_errorbarh(aes_string(xmax = paste(xvarmean, "+", xvarse), xmin = paste(xvarmean, "-", xvarse)), height = .02, alpha = .5) +
-            geom_errorbar(aes_string(ymax = paste(yvarmean,"+", yvarse), ymin = paste(yvarmean, "-", yvarse)), width = .02, alpha = .5) +
-            theme_bw() + labs(list(x = varLookup[varLookup$variable.long == input$xvar, 2], y = varLookup[varLookup$variable.long == input$yvar, 2])) +
-            geom_vline(xintercept = mean(datsCMIP5()[,varLookup[varLookup$variable.long == input$xvar, 3]]), alpha = .5) + 
-            geom_hline(yintercept = mean(datsCMIP5()[,varLookup[varLookup$variable.long == input$yvar, 3]]), alpha = .5)
-          return(pCMIP)
-        })
-      }
-    }
-  }
-  })
-
   
-  # a large table reactive to input
-  #   output$mytable1 = renderDataTable({
-  #     datatab<-dats()
-  #     datatab
-  #   }, options=list(aLengthMenu=c(10,50,100),iDisplayLength=10))
-  #   
-
-    
-    output$metrics = renderDataTable({
-      datametrics<-climatevars
+  output$metrics = renderDataTable({
+    datametrics<-climatevars
     }, options=list(aLengthMenu=c(30,50),iDisplayLength=30))
+  
+})
+  
     
     #   output$refugemap = renderLeaflet({
     #     
@@ -146,4 +125,4 @@ shinyServer(function(input,output) {
     #       addCircles(data=ptsCNA_clipped, weight=2, color= "blue") %>% 
     #       addCircles(data=ptsCNA_bbox, weight=1, color= "yellow")
     #   })
-  })
+  # })
