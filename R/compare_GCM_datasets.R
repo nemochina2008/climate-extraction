@@ -85,13 +85,13 @@ varLookup
 
 # bioclim
 plot(dff50$BIO_12_mean/100, dff50$BIO_5_mean, pch=21, col="gray20", bg="cyan3", xlab="Mean Annual Precip (cm)", ylab="Max Temp of Warmest Month (C)", ylim=c(20, 33), cex=1.5, xlim=c(9,19))
-
 # cmip5
 with(cmip5ply[cmip5ply$cuts=="2050s",], points(MAPmean/10, MWMTmean, pch=21, col="gray10", bg="red2", cex=1))
-
 # climateNA
-with(df50.mod, points(MAP_mean/100, MWMT_mean, pch=24, col="gray10", bg="gray80", cex=1))
-
+with(df50.mod, points(MAP_mean/100, MWMT_mean, pch=24, col="gray10", bg="gray60", cex=1))
+# title/legend
+title("Mean Annual Precip vs. Max Temp of Warmest Month")
+legend("topleft", c("BIOCLIM","CMIP5","ClimateNA"),col=c("gray10"),pt.bg=c("cyan3","red2","gray60"),pch=c(21,21,24), cex=0.9,bty = "n", y.intersp = 0.5)
 
 
 # MEAN ANNUAL PRECIP VS Mean Annual Temp (BIO_12 vs. BIO_1)
@@ -99,22 +99,60 @@ with(df50.mod, points(MAP_mean/100, MWMT_mean, pch=24, col="gray10", bg="gray80"
 # bioclim
 plot(dff50$BIO_12_mean/100, dff50$BIO_1_mean, pch=21, col="gray20", bg="cyan3", 
      xlab="Mean Annual Precip (cm)", ylab="Mean Annual Temp (C)", cex=1.5, ylim=c(12,18), xlim=c(10,16))
-
 # cmip5
 with(cmip5ply[cmip5ply$cuts=="2050s",], points(MAPmean/10, MATmean, pch=21, col="gray10", bg="red2", cex=1))
-
 # climateNA
 with(df50.mod, plot(MAP_mean/100, MAT_mean, pch=24, col="gray10", bg="gray80", cex=1))
 
 
 # BIND SIMILAR METRICS ----------------------------------------------------
 library(dplyr)
+
+# BIOCLIM
 names(dff50)
-bio50<-select(dff50, model, GCM, Overlap,BIO_1_mean, BIO_2_mean, BIO_10_mean, BIO_12_mean, BIO_13_mean, BIO_16_mean)
+bio50<-select(dff50, model, GCM, BIO_1_mean, BIO_2_mean, BIO_10_mean, BIO_12_mean, BIO_13_mean, BIO_16_mean)
+colnames(bio50)<-sub(pattern = "_mean",replacement = "",colnames(bio50))
+bio50$dataset<-"BIOCLIM"
 h(bio50)
+
+# CNA
 names(df50.mod)
 cna50<-select(df50.mod, modname, MAT_mean, MAP_mean, MWMT_mean, AHM_mean, TD_mean, PPT_wt_mean, PPT_sp_mean)
+colnames(cna50)<-sub(pattern = "_mean",replacement = "",colnames(cna50))
+cna50<-rename(cna50, model = modname) %>% 
+  as.data.frame()
+cna50$dataset<-"CNA"
+cna50$model<-sub(pattern = "_rcp85_2055MSY",replacement = "",cna50$model)
 h(cna50)
+
+# CMIP5
+names(cmip5ply)
+cmip50<-filter(cmip5ply, cuts=="2050s") %>% 
+  select(model, MATmean, MAPmean, MWMTmean, AHMmean, MCMTmean, MWMPmean) 
+h(cmip50)
+colnames(cmip50)<-sub(pattern = "mean",replacement = "",colnames(cmip50))
+cmip50$dataset<-"CMIP5"
+
+library(stringr)
+cmip50$model<-sub(pattern = "_1_rcp85", "", cmip50$model)
+cmip50$model<-str_to_upper(cmip50$model)
+
+h(cmip50)
+h(cna50)
+h(bio50)
+
+# MAT
+par(mfrow=c(1,3))
+boxplot(cmip50$MAT,xlab = "CMIP5", col = "red2",ylim=c(12,19))
+boxplot(bio50$BIO_1,xlab = "BIOCLIM", col = "cyan3",ylim=c(12,19))
+boxplot(cna50$MAT,xlab = "CNA", col = "gray80")
+
+
+# MAP
+par(mfrow=c(1,3))
+boxplot(cmip50$MAP,xlab = "CMIP5", col = "red2", ylim=c(95,180))
+boxplot(bio50$BIO_12/10,xlab = "BIOCLIM", col = "cyan3",ylim=c(95,180))
+boxplot(cna50$MAP/10,xlab = "CNA", col = "gray80",ylim=c(95,180))
 
 
 # BIO_1_mean = MAT_mean # mean annual temp
