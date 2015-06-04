@@ -36,7 +36,11 @@ library(plyr)
 # cmip5 <- read.csv("C:/Users/ejholmes/Desktop/Test_apps/Humbolt_Bay/Data/Allmods_dbasin_vars.csv", header = T)
 cmip5 <- read.csv("data/processed/Allmods_dbasin_vars.csv", header = T, stringsAsFactors = F)
 
-cmip5$cuts <- cut(cmip5$yr,breaks = c(1950,2020,2050,2080,2099), include.lowest=TRUE, labels= c("1950-2020", "2021-2050", "2051-2080", ">2081"))
+# old version
+#cmip5$cuts <- cut(cmip5$yr,breaks = c(1950,2020,2050,2080,2099), include.lowest=TRUE, labels= c("1950-2020", "2021-2050", "2051-2080", ">2081"))
+
+# new cuts ("1950-2009", "2010-2039", "2040-2069", "2070-2099")
+cmip5$cuts <- cut(cmip5$yr,breaks = c(1950,2009,2039,2069,2099), include.lowest=TRUE, labels= c("1950-2009", "2020s", "2050s", "2080s"))
 
 cmip5$model <- cmip5$mod
 
@@ -83,7 +87,7 @@ varLookup
 plot(dff50$BIO_12_mean/100, dff50$BIO_5_mean, pch=21, col="gray20", bg="cyan3", xlab="Mean Annual Precip (cm)", ylab="Max Temp of Warmest Month (C)", ylim=c(20, 33), cex=1.5, xlim=c(9,19))
 
 # cmip5
-with(cmip5ply[cmip5ply$cuts=="2051-2080",], points(MAPmean/10, MWMTmean, pch=21, col="gray10", bg="red2", cex=1))
+with(cmip5ply[cmip5ply$cuts=="2050s",], points(MAPmean/10, MWMTmean, pch=21, col="gray10", bg="red2", cex=1))
 
 # climateNA
 with(df50.mod, points(MAP_mean/100, MWMT_mean, pch=24, col="gray10", bg="gray80", cex=1))
@@ -93,18 +97,32 @@ with(df50.mod, points(MAP_mean/100, MWMT_mean, pch=24, col="gray10", bg="gray80"
 # MEAN ANNUAL PRECIP VS Mean Annual Temp (BIO_12 vs. BIO_1)
 
 # bioclim
-plot(dff50$BIO_12_mean/100, dff50$BIO_1_mean, pch=21, col="gray20", bg="cyan3", xlab="Mean Annual Precip (cm)", ylab="Mean Annual Temp (C)", cex=1.5)
+plot(dff50$BIO_12_mean/100, dff50$BIO_1_mean, pch=21, col="gray20", bg="cyan3", 
+     xlab="Mean Annual Precip (cm)", ylab="Mean Annual Temp (C)", cex=1.5, ylim=c(12,18), xlim=c(10,16))
 
 # cmip5
-with(cmip5ply[cmip5ply$cuts=="2051-2080",], points(MAPmean/10, MWMTmean, pch=21, col="gray10", bg="red2", cex=1))
+with(cmip5ply[cmip5ply$cuts=="2050s",], points(MAPmean/10, MATmean, pch=21, col="gray10", bg="red2", cex=1))
 
 # climateNA
-with(df50.mod, points(MAP_mean/100, MWMT_mean, pch=24, col="gray10", bg="gray80", cex=1))
+with(df50.mod, plot(MAP_mean/100, MAT_mean, pch=24, col="gray10", bg="gray80", cex=1))
 
 
+# BIND SIMILAR METRICS ----------------------------------------------------
+library(dplyr)
+names(dff50)
+bio50<-select(dff50, model, GCM, Overlap,BIO_1_mean, BIO_2_mean, BIO_10_mean, BIO_12_mean, BIO_13_mean, BIO_16_mean)
+h(bio50)
+names(df50.mod)
+cna50<-select(df50.mod, modname, MAT_mean, MAP_mean, MWMT_mean, AHM_mean, TD_mean, PPT_wt_mean, PPT_sp_mean)
+h(cna50)
 
 
-## PLOT AGAINST ONE ANOTHER:
-# plot(dff50$BIO_12_mean/100, df50.mod$MAP_mean/100 , pch=21, col="gray20", bg="cyan3", xlab="Mean Annual Precip (BIOCLIM)", ylab="Mean Annual Precip (CNA)", cex=1.5)
+# BIO_1_mean = MAT_mean # mean annual temp
+# BIO_12_mean = MAP_mean # mean annual precip
+# BIO_10_mean = MWMT_mean = Mean Temperature of Warmest Month
+# (BIO_1_mean + 10) / (BIO_12_mean/1000) = AHM_mean = Annual Heat Moisture Index (MAT + 10 / (MAP/1000))
+# BIO_2_mean = TD_mean = MWMT - MCMT = Mean Diurnal Range (Bio-2, TD)
+# BIO_13_mean = MWMP_mean = Mean Precip Wettest Month (Bioclim/CMIP5) 
+# BIO_16_mean = PPT_wt_mean or PPT_sp_mean # Mean Precip Wettest Quarter (Bioclim/CNA)
 
-# can't plot againts cmip b/c differnt number of rows
+
