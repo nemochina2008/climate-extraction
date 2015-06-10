@@ -112,9 +112,6 @@ load(file="data/processed/cmip5_wide.RData")
 
 library(ggplot2)
 
-varLookupBC
-varLookup
-
 # MEAN ANNUAL PRECIP VS MAX TEMP OF WARMEST MONTH (BIO_12 vs. BIO_5)
 
 # bioclim
@@ -153,7 +150,7 @@ h(bio50)
 
 # CNA
 cna50<-filter(cna_wide, period==years) %>% 
-  select(modname,period, MAT_mean, MAP_mean, MWMT_mean, AHM_mean, TD_mean, PPT_wt_mean, PPT_sp_mean)
+  select(modname,period, MAT_mean, MAP_mean, MWMT_mean,MCMT_mean, AHM_mean, TD_mean, PPT_wt_mean, PPT_sp_mean)
 colnames(cna50)<-sub(pattern = "_mean",replacement = "",colnames(cna50))
 cna50<-dplyr::rename(cna50, model = modname) %>% 
   as.data.frame()
@@ -188,45 +185,71 @@ h(bio50)
 # BOXPLOTS ----------------------------------------------------------------
 
 # MAT
-# BIO_1_mean = MAT_mean # mean annual temp
+# BIO_1 = MAT_mean # mean annual temp
 
+png(filename = "output/MAT_boxplot_2050s.png",width = 6, height=4, units = "in",res = 150)
 par(mfrow=c(1,4))
-boxplot(cmip50$MAT,xlab = "CMIP5", col = "red2",ylim=c(12,22), ylab="Air Temperature (C)")
-boxplot(bio50$BIO_1,xlab = "BIOCLIM", col = "cyan3",ylim=c(12,22))
-title("Mean Annual Temperature")
-boxplot(cna50$MAT,xlab = "CNA", col = "gray80", ylim=c(12,22))
-boxplot(cmip1980$MAT,xlab = "Historic 1980-2010", col = "red2",ylim=c(12,22))
+boxplot(cmip50$MAT,xlab = "CMIP5", col = "red2",ylim=c(12,24), ylab="Air Temperature (C)")
+boxplot(bio50$BIO_1,xlab = "BIOCLIM", col = "cyan3",ylim=c(12,24))
+mtext(3,text = "Mean Annual Temperature: 2040-2070",line = 1,adj = 0.1,font = 2)
+boxplot(cna50$MAT,xlab = "CNA", col = "gray80", ylim=c(12,24))
+boxplot(cmip1980$MAT,xlab = "CMIP5 Historic 1980-2010", col = "red2",ylim=c(12,24))
+dev.off()
+
 
 # MAP
-# BIO_12_mean = MAP_mean # mean annual precip
+# BIO_12 = MAP_mean # mean annual precip
+
+png(filename = "output/MAP_boxplot_2050s.png",width = 6, height=4, units = "in",res = 150)
 par(mfrow=c(1,4))
 boxplot(cmip50$MAP,xlab = "CMIP5", col = "red2", ylim=c(95,180), ylab="Precipitation (cm)")
 boxplot(bio50$BIO_12/10,xlab = "BIOCLIM", col = "cyan3",ylim=c(95,180))
-title("Mean Annual Precipitation")
+mtext(3,text = "Mean Annual Precipitation: 2040-2070",line = 1,adj = 0.1,font = 2)
 boxplot(cna50$MAP/10,xlab = "CNA", col = "gray80",ylim=c(95,180))
-boxplot(cmip1980$MAP,xlab = "Historic 1980-2010", col = "red2", ylim=c(95,180), ylab="Precipitation (cm)")
+boxplot(cmip1980$MAP,xlab = "CMIP5 Historic 1980-2010", col = "red2", ylim=c(95,180), ylab="Precipitation (cm)")
+dev.off()
 
 # MTWM
-# BIO_05_mean = MWMT_mean = Mean Temperature of Warmest Month
+# BIO_05 = MWMT_mean = Mean Temperature of Warmest Month
+png(filename = "output/MTWM_boxplot_2050s.png",width = 6, height=4, units = "in",res = 150)
 par(mfrow=c(1,4))
-boxplot(cmip50$MWMT,xlab = "CMIP5", col = "red2", ylab="Mean Temperature of Warmest Month (C)", ylim=c(20,32))
-boxplot(bio50$BIO_5,xlab = "BIOCLIM", col = "cyan3", ylim=c(20,32))
-title("Mean Temperature \n of Warmest Month")
-boxplot(cna50$MWMT,xlab = "CNA", col = "gray80", ylim=c(20,32))
-boxplot(cmip1980$MWMT,xlab = "CMIP5", col = "red2", ylim=c(20,32))
+boxplot(cmip50$MWMT,xlab = "CMIP5", col = "red2", ylab="Mean Temperature of Warmest Month (C)", ylim=c(18,31))
+boxplot(bio50$BIO_5,xlab = "BIOCLIM", col = "cyan3", ylim=c(18,31))
+mtext(3,text = "Mean Temperature  of Warmest Month: 2040-2070",line = 1,adj = 0.3,font = 2)
+boxplot(cna50$MWMT,xlab = "CNA", col = "gray80", ylim=c(18,31))
+boxplot(cmip1980$MWMT,xlab = "CMIP5 Historic 1980-2010", col = "red2", ylim=c(18,31))
+dev.off()
 
-# AHM
-# (BIO_1_mean + 10) / (BIO_12_mean/1000) = AHM_mean = Annual Heat Moisture = Index (MAT + 10 / (MAP/1000))
+# AHM (only for CMIP5, weird values for ClimateNA and not calcuated directly for BIOCLIM)
+# AHM_mean = Annual Heat Moisture = Index (MAT + 10 / (MAP/1000))
+png(filename = "output/AHM_boxplot_2050s.png",width = 6, height=4, units = "in",res = 150)
+par(mfrow=c(1,2))
+boxplot((cmip50$AHM),xlab = "CMIP5", col = "red2", ylab="AHM",ylim=c(200,280))
+mtext(3, text="Annual Heat Moisture Index \n (AHM) : 2040-2070",line = 1,adj = 0.3,font = 2)
+boxplot(cmip1980$AHM,xlab =  "CMIP5 Historic", col = "red2", ylab="AHM", ylim=c(200,280))
+mtext(3, text="Annual Heat Moisture Index \n (AHM) : 1980-2010", line=1, adj =0.3, font=2)
+dev.off()
+
+# MEAN DIURNAL RANGE
+# BIO_2 = TD_mean = MWMT - MCMT = Mean Diurnal Range (Bio-2, TD)
+
+png(filename = "output/TDrange_boxplot_2050s.png",width = 6, height=4, units = "in",res = 150)
 par(mfrow=c(1,4))
-boxplot(cmip50$AHM/10,xlab = "CMIP5", col = "red2", ylab="AHM", ylim=c(15,28))
-boxplot((cmip50$MAT+10/bio50$BIO_12/1000),xlab = "CMIP5", col = "red2", ylab="AHM",ylim=c(15,28))
-boxplot((bio50$BIO_1+10)/(bio50$BIO_12/1000),xlab = "BIOCLIM", col = "cyan3",ylim=c(15,28))
-title("AHM")
-boxplot(cna50$AHM,xlab = "CNA", col = "gray80", ylim=c(15,28))
-#boxplot((cmip50$MAT+10/bio50$BIO_12/1000),xlab = "CMIP5", col = "red2", ylab="AHM")
+boxplot(cmip50$MWMT-cmip50$MCMT,xlab = "CMIP5", col = "red2", ylab="Mean Diurnal Range (C)", ylim=c(8,18))
+boxplot(bio50$BIO_2,xlab = "BIOCLIM", col = "cyan3", ylim=c(8,18))
+mtext(3,text = "Mean Diurnal Range: 2040-2070",line = 1,adj = 0.3,font = 2)
+boxplot(cna50$MWMT-cna50$MCMT,xlab = "CNA", col = "gray80", ylim=c(8,20))
+boxplot(cmip1980$MWMT-cmip1980$MCMT,xlab = "CMIP5 Historic 1980-2010", col = "red2", ylim=c(8,18))
+dev.off()
 
-# BIO_2_mean = TD_mean = MWMT - MCMT = Mean Diurnal Range (Bio-2, TD)
+# MWMP
 # BIO_13_mean = MWMP_mean = Mean Precip Wettest Month (Bioclim/CMIP5) 
-# BIO_16_mean = PPT_wt_mean or PPT_sp_mean # Mean Precip Wettest Quarter (Bioclim/CNA)
+png(filename = "output/MWMP_boxplot_2050s.png",width = 6, height=4, units = "in",res = 150)
+par(mfrow=c(1,3))
+boxplot(cmip50$MWMP,xlab = "CMIP5", col = "red2", ylab="Precipitation (mm)", ylim=c(250,600))
+boxplot(bio50$BIO_13,xlab = "BIOCLIM", col = "cyan3", ylim=c(250,600))
+mtext(3,text = "Mean Annual Precipitation: 2040-2070",line = 1,adj = 1,font = 2)
+boxplot(cmip1980$MWMP,xlab = "CMIP5 Historic 1980-2010", col = "red4", ylim=c(250,600))
+dev.off()
 
 

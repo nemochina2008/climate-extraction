@@ -10,9 +10,11 @@ shinyServer(function(input,output) {
     if(input$gcm == "bioclim"){
       # BIOCLIM
       datsBIOCLIM <- reactive({
-        if(input$selectBIO == "2050s"){dats <- dff50}
+        if(input$selectBIO == "2050s"){
+          dats <- dff50[dff50$GCM %in% biomods,]}
         else {
-          if(input$selectBIO == "2070s"){dats <- dff70}
+          if(input$selectBIO == "2070s"){
+            dats <- dff70[dff70$GCM %in% biomods,]}
         }
       })
       
@@ -39,11 +41,14 @@ shinyServer(function(input,output) {
         if(input$gcm== "cna"){
           # CLIMATENA
           datsCNA <- reactive({
-            if(input$selectCNA == "2020s"){datsCNA <- df20.mod}
+            if(input$selectCNA == "2020s"){
+              datsCNA <- df20.mod[df20.mod$modname %in% cnamods,]}
             else {
-              if(input$selectCNA == "2050s"){datsCNA <- df50.mod}
+              if(input$selectCNA == "2050s"){
+                datsCNA <- df50.mod[df50.mod$modname %in% cnamods,]}
               else {
-                if(input$selectCNA == "2080s"){datsCNA <- df80.mod}
+                if(input$selectCNA == "2080s"){
+                  datsCNA <- df80.mod[df80.mod$modname %in% cnamods,]}
                 else {
                   if(input$selectCNA == "Historic"){datsCNA <- dfnorms.MSY.mod}
                 }
@@ -72,9 +77,9 @@ shinyServer(function(input,output) {
               # CMIP5
               datsCMIP5 <- reactive({
                 if(input$selectCMIP5 == "2020s"){
-                  datsCMIP5 <- cmip5ply[cmip5ply$cuts == "2021-2050",]
+                  datsCMIP5 <- cmip5ply[cmip5ply$cuts == "2021-2050" & cmip5ply$model %in% cm5mods,]
                 } else { 
-                  if(input$selectCMIP5 == "2050s") {datsCMIP5 <- cmip5ply[cmip5ply$cuts == "2051-2080",]}
+                  if(input$selectCMIP5 == "2050s") {datsCMIP5 <- cmip5ply[cmip5ply$cuts == "2051-2080" & cmip5ply$model %in% cm5mods,]}
                 }
               })
               

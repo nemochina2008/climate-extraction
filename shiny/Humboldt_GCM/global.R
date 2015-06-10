@@ -6,8 +6,33 @@
 #library(rgdal)
 library(markdown)
 library(knitr)
+library(stringr)
 
-# for BIOCLIM
+
+# the mods to keep
+#unique(dff50$GCM) # BIOCLIM
+biomods<-c("ACCESS1-0", "CCSM4", "CNRM-CM5", 
+           "HadGEM2-ES", "HadGEM2-CC", "MIROC5")
+
+#unique(cmip5ply$model) # CMIP5
+cm5mods<-c("ACCESS1-0", "CCSM4", "CNRM-CM5", "CESM1-BGC", "CMCC-CM",
+           "CANESM2", "GFDL-CM3", "HADGEM2-ES", "HADGEM2-CC", "MIROC5")
+
+#unique(df20.mod$modname) # CNA
+cnamods<-c("ACCESS1-0", "CCSM4", "CNRM-CM5", "CESM1-BGC", "CanESM2",
+           "GFDL-CM3", "HadGEM2-ES", "MIROC5")
+
+# load(file="data/processed/bioclim_50_70_wide.RData")
+# bioc_wide<-filter(bioc_wide, GCM %in% biomods) # filter to specific models
+# 
+# load(file="data/processed/CNA_wide.RData")
+# cna_wide<-filter(cna_wide, modname %in% cnamods) # filter to specific models
+# 
+# #cmip_wide<-filter(cmip5ply, model %in% cm5mods) # filter to specific models
+# load(file="data/processed/cmip5_wide.RData")
+
+# FOR BIOCLIM -------------------------------------------------------------
+
 load(file = "bioclim_50_70.RData")
 vars1<-names(dff50)[c(2:20)]
 vars2<-sub(pattern = "_mean",replacement = "",vars1)
@@ -16,11 +41,15 @@ varLookupBC$variable.mean <- paste(varLookupBC$variable.short, "_mean", sep = ""
 varLookupBC$variable.se <- paste(varLookupBC$variable.short, "_se", sep = "")
 varLookupBC
 
-
-
 # FOR CLIMATE NA ----------------------------------------------------------
 
 load(file = "CNA_near_mid_far_MSY.RData")
+df20.mod$modname<-sub(pattern = "_rcp85_2025MSY",replacement = "",df20.mod$modname)
+unique(df20.mod$modname) # CNA
+df50.mod$modname<-sub(pattern = "_rcp85_2055MSY",replacement = "",df50.mod$modname)
+unique(df50.mod$modname) # CNA
+df80.mod$modname<-sub(pattern = "_rcp85_2085MSY",replacement = "",df80.mod$modname)
+unique(df80.mod$modname) # CNA
 
 varsNA1<-names(df20.mod)[c(2:80)]
 varsNA2<-sub(pattern = "_mean",replacement = "",varsNA1)
@@ -51,6 +80,9 @@ cmip5ply <- ddply(cmip5, .(cuts, model), summarize,
                   AHMmean = mean(AHM), AHMse = sd(AHM)/sqrt(length(AHM)),
                   SHMmean = mean(SHM), SHMse = sd(SHM)/sqrt(length(SHM))                  
 )
+
+cmip5ply$model<-sub(pattern = "_1_rcp85", "", cmip5ply$model)
+cmip5ply$model<-str_to_upper(cmip5ply$model)
 
 ##
 
