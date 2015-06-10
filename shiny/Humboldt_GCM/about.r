@@ -2,7 +2,7 @@ function(){
 	tabPanel("Background Info",
 		p(style="text-align:justify",'This web application uses data from BIOCLIM, Climate NA, and CMIP5 datasets. Standard error bars have been included for each variable set. Keep in mind that BIOCLIM and CMIP5 data represent temporal variability of these GCM data, whereas ClimateNA represents spatial variability within the refuge for these GCM data. 
 
-BIOCLIM has been downscaled at a ?? scale and was derived from PRISM data (see weblinks below).
+BIOCLIM has been downscaled at a 4km scale and was derived from PRISM data (see weblinks below).
 ClimateNA uses an elevational driven downscaling with PRISM, and is based on CMIP5 GCM models.
 CMIP5 has been downscaled to a 4km scale.
 		  
@@ -19,7 +19,7 @@ CMIP5 has been downscaled to a 4km scale.
 		div(class="span4",
         strong('Code'),
         p('Source code available:',
-          a("Here", href="https://github.com/ryan-ucd/climate-extraction",target="_blank")),
+          a("Here", href="https://github.com/ryan-ucd/Humboldt_GCM",target="_blank")),
         br()
       ),
 

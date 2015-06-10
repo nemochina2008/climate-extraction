@@ -6,7 +6,7 @@
 #library(rgdal)
 library(markdown)
 library(knitr)
-library(stringr)
+#library(stringr)
 
 
 # the mods to keep
@@ -15,8 +15,8 @@ biomods<-c("ACCESS1-0", "CCSM4", "CNRM-CM5",
            "HadGEM2-ES", "HadGEM2-CC", "MIROC5")
 
 #unique(cmip5ply$model) # CMIP5
-cm5mods<-c("ACCESS1-0", "CCSM4", "CNRM-CM5", "CESM1-BGC", "CMCC-CM",
-           "CANESM2", "GFDL-CM3", "HADGEM2-ES", "HADGEM2-CC", "MIROC5")
+cm5mods<-c("access1-0", "ccsm4", "cnrm-cm5", "cesm1-BGC", "cmcc-cm",
+           "canesm2", "gfdl-cm3", "hadgem2-es", "hadgem2-cc", "miroc5")
 
 #unique(df20.mod$modname) # CNA
 cnamods<-c("ACCESS1-0", "CCSM4", "CNRM-CM5", "CESM1-BGC", "CanESM2",
@@ -82,7 +82,7 @@ cmip5ply <- ddply(cmip5, .(cuts, model), summarize,
 )
 
 cmip5ply$model<-sub(pattern = "_1_rcp85", "", cmip5ply$model)
-cmip5ply$model<-str_to_upper(cmip5ply$model)
+#cmip5ply$model<-str_to_upper(cmip5ply$model)
 
 ##
 
