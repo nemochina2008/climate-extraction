@@ -64,6 +64,10 @@ shinyUI(fluidPage(
               tabPanel(title = "GCM Plot", plotOutput("modPlot"), width = 8,height = 20),
               tabPanel(title="Metric Definitions",includeMarkdown("Climate_Var_Names.md"),
                        dataTableOutput("metrics")),
+              tabPanel(
+                "Refuge Location",leafletOutput("refugemap"),
+                h5("Climate NA points and Polygon Extent")
+              ),
               tabPanelAbout()
               )
             )

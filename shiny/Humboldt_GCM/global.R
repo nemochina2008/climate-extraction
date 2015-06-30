@@ -1,9 +1,9 @@
 # load(file = "./data/processed/CNA_near_mid_far_MSY.RData")
 
 # Libraries
-#library(maptools)
-#library(leaflet)
-#library(rgdal)
+library(maptools)
+library(leaflet)
+library(rgdal)
 library(markdown)
 library(knitr)
 #library(stringr)
