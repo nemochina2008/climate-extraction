@@ -1,19 +1,16 @@
 options(help_type="html")
-
-# set a CRAN mirror
- local({r <- getOption("repos")
-       r["CRAN"] <- "http://cran.cnr.berkeley.edu/"
-       options(repos=r)})
-
 options(prompt=">")
 options(continue="   +")
 # options(prompt=">")
 # options(continue="    ")
 # options(error=utils::recover) # error loop to find exact location of script error
-if(Sys.info()[4]=="RYAN-PC") {root<-"C://Users//Ryan//Desktop//Dropbox//R//"} else {
-  if(Sys.info()[7]=="Ryan") {root<-"/Users/Ryan/Dropbox/R/"} else
-  {root<-"C://Users//rapeek.AD3//Dropbox//R//"}
+
+if(Sys.info()[7]=="rapeek") {
+  root<-"C://Users//rapeek.AD3//Dropbox//R//"
+} else if (Sys.info()[7]=="ryanpeek") {
+  root<-"//Users//ryanpeek//Dropbox/R/"
 }
+
 
 .First <- function(){
 	cat("\nYarRRR!\n-------------------\nClimate Extraction\n",sep="")

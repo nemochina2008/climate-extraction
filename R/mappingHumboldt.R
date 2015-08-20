@@ -2,6 +2,7 @@
 
 library(maptools)
 library(leaflet)
+library(magrittr)
 library(rgdal)
 
 # get csv of polygon ClimateNA pts
@@ -17,7 +18,7 @@ nad83z10<-"+proj=utm +zone=10 +ellps=GRS80 +datum=NAD83 +units=m +no_defs"
 # convert to spatial 
 
 # extent polygon
-polygon <- readShapePoly("./data/shps/ExtentPoly.shp", proj4string=CRS(nad83z10))
+polygon <- readShapePoly(fn = "./data/shps/ExtentPoly.shp", proj4string=CRS(nad83z10))
 polygon <- spTransform(polygon, CRS("+proj=longlat +datum=NAD83"))
 
 ptsCNA_clipped <- readShapePoints("./data/shps/ClimateNA_humboldt_extent_only.shp", proj4string=CRS(nad83z10))
@@ -27,7 +28,6 @@ ptsCNA_bbox <- readShapePoints("./data/shps/ClimateNA_master_pts_humboldt.shp", 
 ptsCNA_bbox <- spTransform(ptsCNA_bbox, CRS("+proj=longlat +datum=NAD83"))
 
 # polygon2 <- readShapePoly("C:/Users/ejholmes/Documents/USFWS/Refuges/Humbolt_Bay/Data/GIS/Shapes/Humbolt_Bay_RHI.shp", proj4string=CRS("+proj=longlat +datum=NAD83"))
-
 
 leaflet() %>% addTiles() %>% 
   setView(-124.0625, 40.6875, 10) %>%
@@ -62,8 +62,8 @@ ggplot() +
   geom_polygon(data=humboldt.points,
                aes(long,lat,group=group), alpha=0.5,fill="navyblue") +
   geom_path(color="white") +
-  coord_equal() + theme_bw() + geom_point(data=CNA.nad,aes(long,lat),color="orange") 
-# 
+  coord_equal() + theme_bw() 
+ 
 #  geom_point(data=CNApts, aes(x=X, y=Y),pch=21,color="black",size=2)
   
 
