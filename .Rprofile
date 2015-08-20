@@ -1,18 +1,16 @@
 options(help_type="html")
 
-# set a CRAN mirror
- local({r <- getOption("repos")
-       r["CRAN"] <- "http://cran.cnr.berkeley.edu/"
-       options(repos=r)})
 
 options(prompt=">")
 options(continue="   +")
 # options(prompt=">")
 # options(continue="    ")
 # options(error=utils::recover) # error loop to find exact location of script error
-if(Sys.info()[4]=="RYAN-PC") {root<-"C://Users//Ryan//Desktop//Dropbox//R//"} else {
-  if(Sys.info()[7]=="Ryan") {root<-"/Users/Ryan/Dropbox/R/"} else
-  {root<-"C://Users//rapeek.AD3//Dropbox//R//"}
+
+if(Sys.info()[7]=="rapeek") {
+  root<-"C://Users//rapeek.AD3//Dropbox//R//"
+} else if (Sys.info()[7]=="ryanpeek") {
+  root<-"//Users//ryanpeek//Dropbox/R/"
 }
 
 .First <- function(){
@@ -31,14 +29,6 @@ if(Sys.info()[4]=="RYAN-PC") {root<-"C://Users//Ryan//Desktop//Dropbox//R//"} el
 
 #library(dplyr)
 library(ggplot2)
-#library(grid)
-#library(scales)
-#library(tidyr)
-#library(reshape)
-#library(lubridate)
-#library(rmarkdown)
-#library(shiny)
-#library(shinyapps)
 
 cat("\014")
 cat(R.version$version.string,"\n",sep="")
